@@ -12,6 +12,7 @@
 -export([reverse/1]).
 -export([convert_list_to_c/1]).
 -export([get_min_to_max_temp_cities/1]).
+-export([get_min_max_temp_city/1]).
 
 double(X) -> 2 * X.
 
@@ -68,19 +69,38 @@ convert_list_to_c([]) ->
     [].
 
 % [{moscow, {c, -10}}, {london, {c, 10}}, {mohave, {c, 100}}]
+% [{moscow, {c, 50}}, {london, {c, 20}}, {mohave, {c, 100}}]
 get_min_to_max_temp_cities([{Name, {c, Temp}} | Rest]) ->
     get_min_to_max_temp_cities([Name], Rest, Temp).
 
+% LOL THIS IS WRONG :D TIME TO LEARN SORTING ALGORITHMS SLSOLOLO
 get_min_to_max_temp_cities(List, [{Name, {c, Temp}} | Rest], Min) when Temp < Min ->
     New_List = [Name] ++ List,
     get_min_to_max_temp_cities(New_List, Rest, Temp);
-
 get_min_to_max_temp_cities(List, [{Name, {c, Temp}} | Rest], Min) ->
     New_List = List ++ [Name],
     get_min_to_max_temp_cities(New_List, Rest, Min);
 
 get_min_to_max_temp_cities(List, [], Min) ->
     List.
+
+get_min_max_temp_city([{Name, {c, Temp}} | Rest]) ->
+    get_min_max_temp_city({Name, Name}, Rest, Temp, Temp).
+
+get_min_max_temp_city({Max_Name, Min_Name}, [{Name, {c, Temp}} | Rest], Max, Min) ->
+    if
+	Temp < Min ->
+	    get_min_max_temp_city({Max_Name, Name}, Rest, Max, Temp);
+	Temp > Max ->
+	    get_min_max_temp_city({Name, Min_Name}, Rest, Temp, Min);
+	true ->
+	    get_min_max_temp_city({Max_Name, Min_Name}, Rest, Max, Min)
+    end;
+
+get_min_max_temp_city({Max_Name, Min_Name}, [], Max, Min) ->
+    {Max_Name, Min_Name}.
+
+    
 
     
     
