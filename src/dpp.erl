@@ -1,131 +1,90 @@
-% Dining Philosopher's Problem (WORK IN PROGRESS HOLY SHIT)
+% Dining Philosopher's Problem (WORK IN PROGRESS)
 % By: William F. Smith
 
 -module(dpp).
 
--export([double/1, fac/1, mult/2]).
--export([convert/2]).
--export([convert_length/1]).
--export([list_length/1]).
--export([format_temps/1]).
--export([list_max/1]).
--export([reverse/1]).
--export([convert_list_to_c/1]).
--export([get_min_to_max_temp_cities/1]).
--export([get_min_max_temp_city/1]).
+-export([get_min/1]).
+-export([replace_element/3]).
+-export([bubble_sort/1]).
+-export([selection_sort/1]).
 
-double(X) -> 2 * X.
+% Other Functions
+get_min([X|L]) ->
+    get_min (L, X).
+    
+get_min([], M) ->
+    M;
 
-fac(1) ->
-	1;
-fac(N) ->
-	N * fac (N - 1).
+get_min([X|L], M) when X < M ->
+    get_min (L, X);
+get_min([_|L], M) ->
+    get_min (L, M).
 
-mult(X, Y) ->
-	io:format("Hey\n"),
-	X * Y.
+replace_element(L, I, V) ->
+    replace_element([], L, I, V, 0).
 
-convert(M, inch) ->
-	M / 2.54;
+replace_element(NL, [], _, _, _) ->
+    NL;
 
-convert(N, centimeter) ->
-	N * 2.54.
+replace_element(NL, [_|L], I, V, CI) when CI == I ->
+    NL ++ [V] ++ L;
+replace_element(NL, [X|L], I, V, CI) ->
+    replace_element(NL ++ [X], L, I, V, CI + 1).
+% End Other Functions
 
-convert_length({centimeter, X}) ->
-	{inch, X / 2.54};
-convert_length({inch, Y}) ->
-	{centimeter, Y * 2.54}.
+%%% Sorting Algorithms
 
-list_length([]) ->
-	0;
-list_length([First | Rest]) ->
-	1 + list_length(Rest).
+%% Bubble Sort
+% L - List
+% NL - New List
+bubble_sort(L) ->
+    bubble_sort([], L, false).
 
-format_temps([])->
-    ok;
-format_temps([City | Rest]) ->
-    print_temp(convert_to_celsius(City)),
-    format_temps(Rest).
+bubble_sort(NL, [X|[]], false) ->
+    NL ++ [X];
 
-convert_to_celsius({Name, {c, Temp}}) ->
-    {Name, {c, Temp}};
-convert_to_celsius({Name, {f, Temp}}) ->
-    {Name, {c, (Temp - 32) * 5 / 9}}.
+bubble_sort(NL, [X|[]], true) ->
+    bubble_sort([], NL ++ [X], false);
 
-print_temp({Name, {c, Temp}}) ->
-    io:format("~-15w ~w c~n", [Name, Temp]);
-print_temp({Name, {f, Temp}}) ->
-    io:format("~-15w ~w f~n", [Name, Temp]).
-
-convert_list_to_c([{Name, {f, Temp}} | Rest]) ->
-    Converted_City = convert_to_celsius({Name, {f, Temp}}),
-    print_temp(Converted_City),
-    [Converted_City | convert_list_to_c(Rest)];
-convert_list_to_c([{Name, {c, Temp}} | Rest]) ->
-    io:format("OH MY GOD ITS A CELSIUS :O~n"),
-    print_temp({Name, {c, Temp}}),
-    [{Name, {c, Temp}} | convert_list_to_c(Rest)];
-convert_list_to_c([]) ->
-    [].
-
-% [{moscow, {c, -10}}, {london, {c, 10}}, {mohave, {c, 100}}]
-% [{moscow, {c, 50}}, {london, {c, 20}}, {mohave, {c, 100}}]
-get_min_to_max_temp_cities([{Name, {c, Temp}} | Rest]) ->
-    get_min_to_max_temp_cities([Name], Rest, Temp).
-
-% LOL THIS IS WRONG :D TIME TO LEARN SORTING ALGORITHMS SLSOLOLO
-get_min_to_max_temp_cities(List, [{Name, {c, Temp}} | Rest], Min) when Temp < Min ->
-    New_List = [Name] ++ List,
-    get_min_to_max_temp_cities(New_List, Rest, Temp);
-get_min_to_max_temp_cities(List, [{Name, {c, Temp}} | Rest], Min) ->
-    New_List = List ++ [Name],
-    get_min_to_max_temp_cities(New_List, Rest, Min);
-
-get_min_to_max_temp_cities(List, [], Min) ->
-    List.
-
-get_min_max_temp_city([{Name, {c, Temp}} | Rest]) ->
-    get_min_max_temp_city({Name, Name}, Rest, Temp, Temp).
-
-get_min_max_temp_city({Max_Name, Min_Name}, [{Name, {c, Temp}} | Rest], Max, Min) ->
+bubble_sort(NL, [X, Y|L], C) ->
     if
-	Temp < Min ->
-	    get_min_max_temp_city({Max_Name, Name}, Rest, Max, Temp);
-	Temp > Max ->
-	    get_min_max_temp_city({Name, Min_Name}, Rest, Temp, Min);
+	Y < X ->
+	    bubble_sort(NL ++ [Y], [X|L], true); 
 	true ->
-	    get_min_max_temp_city({Max_Name, Min_Name}, Rest, Max, Min)
-    end;
+	    bubble_sort(NL ++ [X], [Y|L], C)
+    end.
+% End Bubble Sort
 
-get_min_max_temp_city({Max_Name, Min_Name}, [], Max, Min) ->
-    {Max_Name, Min_Name}.
+%% Selection Sort
+% L - List
+% HL - Head List
+% TL - Tail List
+% NL - New List
+selection_sort([X|L]) ->
+    selection_sort([], [], [X], L).
+ 
+selection_sort(NL, [], [X,Y|TL], []) ->
+    selection_sort(NL ++ [X], [], [Y], TL);
 
+selection_sort(NL, [], [X|[]], []) ->
+    selection_sort(NL ++ [X], [], [], []);
+
+selection_sort(NL, [], [], []) ->
+    NL;
+
+selection_sort(NL, [X,Y|HT], [Z|TL], []) when Z < X ->
+    selection_sort(NL ++ [Z], [], [Y], HT ++ [X|TL]);
+selection_sort(NL, [X,Y|HT], [Z|TL], []) -> 
+    selection_sort(NL ++ [X], [], [Y], HT ++ [Z|TL]);
+
+selection_sort(NL, [X|[]], [Y|TL], []) when Y < X ->
+    selection_sort(NL ++ [Y], [], [X], TL);
+selection_sort(NL, [X|[]], [Y|TL], []) ->
+    selection_sort(NL ++ [X], [], [Y], TL);
+
+selection_sort(NL, HT, [X|TL], [Y|L]) when Y < X ->
+    selection_sort(NL, HT ++ [X|TL], [Y], L);
+selection_sort(NL, HT, TL, [X|L]) ->
+    selection_sort(NL, HT, TL ++ [X], L).    
+% End Selection Sort
     
-
-    
-    
-list_max([Head | Rest]) ->
-    list_max(Rest, Head).
-
-list_max([], Res) ->
-    Res;
-list_max([Head | Rest], Result_so_far) when Head > Result_so_far ->
-    list_max(Rest, Head);
-list_max([Head | Rest], Result_so_far) ->
-    list_max(Rest, Result_so_far).
-
-reverse(List) ->
-    reverse(List, []).
-
-reverse([Head | Rest], Reversed_List) ->
-    reverse(Rest, [Head | Reversed_List]);
-reverse([], Reversed_List) ->
-    Reversed_List.
-
-
-
-
-
-
-
-
