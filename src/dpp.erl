@@ -35,8 +35,11 @@ replace_element(NL, [X|L], I, V, CI) ->
 %%% Sorting Algorithms
 
 %% Bubble Sort
+% http://en.wikipedia.org/wiki/Bubble_sort
 % L - List
 % NL - New List
+
+% First Attempt
 bubble_sort(L) ->
     bubble_sort([], L, false).
 
@@ -46,7 +49,7 @@ bubble_sort(NL, [X|[]], false) ->
 bubble_sort(NL, [X|[]], true) ->
     bubble_sort([], NL ++ [X], false);
 
-bubble_sort(NL, [X, Y|L], C) ->
+bubble_sort(NL, [X,Y|L], C) ->
     if
 	Y < X ->
 	    bubble_sort(NL ++ [Y], [X|L], true); 
@@ -56,10 +59,13 @@ bubble_sort(NL, [X, Y|L], C) ->
 % End Bubble Sort
 
 %% Selection Sort
+% http://en.wikipedia.org/wiki/Selection_sort
 % L - List
 % HL - Head List
 % TL - Tail List
 % NL - New List
+
+% First Attempt
 selection_sort([X|L]) ->
     selection_sort([], [], [X], L).
  
@@ -88,3 +94,7 @@ selection_sort(NL, HT, TL, [X|L]) ->
     selection_sort(NL, HT, TL ++ [X], L).    
 % End Selection Sort
     
+%% Insertion Sort
+% http://en.wikipedia.org/wiki/Insertion_sort
+% TODO:
+% End Insertion Sort
