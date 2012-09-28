@@ -9,7 +9,7 @@
 -export([selection_sort/1]).
 
 % Other Functions
-get_min([X|L]) ->
+get_min([X | L]) ->
     get_min (L, X).
     
 get_min([], M) ->
@@ -26,9 +26,9 @@ replace_element(L, I, V) ->
 replace_element(NL, [], _, _, _) ->
     NL;
 
-replace_element(NL, [_|L], I, V, CI) when CI == I ->
+replace_element(NL, [_ | L], I, V, CI) when CI == I ->
     NL ++ [V] ++ L;
-replace_element(NL, [X|L], I, V, CI) ->
+replace_element(NL, [X | L], I, V, CI) ->
     replace_element(NL ++ [X], L, I, V, CI + 1).
 % End Other Functions
 
@@ -43,18 +43,18 @@ replace_element(NL, [X|L], I, V, CI) ->
 bubble_sort(L) ->
     bubble_sort([], L, false).
 
-bubble_sort(NL, [X|[]], false) ->
+bubble_sort(NL, [X | []], false) ->
     NL ++ [X];
 
-bubble_sort(NL, [X|[]], true) ->
+bubble_sort(NL, [X | []], true) ->
     bubble_sort([], NL ++ [X], false);
 
-bubble_sort(NL, [X,Y|L], C) ->
+bubble_sort(NL, [X,Y |L], C) ->
     if
 	Y < X ->
-	    bubble_sort(NL ++ [Y], [X|L], true); 
+	    bubble_sort(NL ++ [Y], [X | L], true); 
 	true ->
-	    bubble_sort(NL ++ [X], [Y|L], C)
+	    bubble_sort(NL ++ [X], [Y | L], C)
     end.
 % End Bubble Sort
 
@@ -66,31 +66,31 @@ bubble_sort(NL, [X,Y|L], C) ->
 % NL - New List
 
 % First Attempt
-selection_sort([X|L]) ->
+selection_sort([X | L]) ->
     selection_sort([], [], [X], L).
  
-selection_sort(NL, [], [X,Y|TL], []) ->
+selection_sort(NL, [], [X,Y | TL], []) ->
     selection_sort(NL ++ [X], [], [Y], TL);
 
-selection_sort(NL, [], [X|[]], []) ->
+selection_sort(NL, [], [X | []], []) ->
     selection_sort(NL ++ [X], [], [], []);
 
 selection_sort(NL, [], [], []) ->
     NL;
 
-selection_sort(NL, [X,Y|HT], [Z|TL], []) when Z < X ->
-    selection_sort(NL ++ [Z], [], [Y], HT ++ [X|TL]);
-selection_sort(NL, [X,Y|HT], [Z|TL], []) -> 
-    selection_sort(NL ++ [X], [], [Y], HT ++ [Z|TL]);
+selection_sort(NL, [X,Y | HT], [Z | TL], []) when Z < X ->
+    selection_sort(NL ++ [Z], [], [Y], HT ++ [X | TL]);
+selection_sort(NL, [X,Y | HT], [Z | TL], []) -> 
+    selection_sort(NL ++ [X], [], [Y], HT ++ [Z | TL]);
 
-selection_sort(NL, [X|[]], [Y|TL], []) when Y < X ->
+selection_sort(NL, [X | []], [Y | TL], []) when Y < X ->
     selection_sort(NL ++ [Y], [], [X], TL);
-selection_sort(NL, [X|[]], [Y|TL], []) ->
+selection_sort(NL, [X | []], [Y | TL], []) ->
     selection_sort(NL ++ [X], [], [Y], TL);
 
-selection_sort(NL, HT, [X|TL], [Y|L]) when Y < X ->
-    selection_sort(NL, HT ++ [X|TL], [Y], L);
-selection_sort(NL, HT, TL, [X|L]) ->
+selection_sort(NL, HT, [X | TL], [Y | L]) when Y < X ->
+    selection_sort(NL, HT ++ [X | TL], [Y], L);
+selection_sort(NL, HT, TL, [X | L]) ->
     selection_sort(NL, HT, TL ++ [X], L).    
 % End Selection Sort
     
