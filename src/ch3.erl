@@ -16,6 +16,8 @@
 -export([db_read/2]).
 -export([db_match/2]).
 -export([filter/2]).
+-export([reverse/1]).
+-export([parse/1]).
 
 %% 3-1
 
@@ -121,10 +123,36 @@ filter([X | L], N, NL) when X =< N ->
 filter([_ | L], N, NL) ->
     filter(L, N, NL).
 
+reverse(L) ->
+    reverse(L, []).
 
-
+reverse([], NL) ->
+    NL;
+reverse([X | L], NL) ->
+    reverse(L, [X | NL]).
     
+% 3-8
 
+parse(L) ->
+    parse(L, []).
 
+% work in progress
 
-
+parse([], NL) when not is_tuple(NL) ->
+    erlang:list_to_tuple(NL);
+parse([], NL) ->
+    NL;
+parse([X | _], NL) when X == 41 ->
+    erlang:list_to_tuple(NL);
+parse([X | L], NL) when X == 40 ->
+    io:format("~w~n", [NL]),
+    io:format("~w~n~n", [parse(L)]),
+    erlang:append_element(erlang:list_to_tuple(NL), parse(L));
+parse([X | L], NL) when X == 43 ->
+    parse(L, [plus | NL]);
+parse([X | L], NL) when X == 45 ->
+    parse(L, [minus | NL]);
+parse([X | L], NL) when X == 32 ->
+    parse(L, NL);
+parse([X | L], NL) ->
+    parse(L, NL ++ [{num, element(1, string:to_integer([X]))}]).
