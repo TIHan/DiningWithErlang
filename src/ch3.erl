@@ -136,7 +136,7 @@ reverse([X | L], NL) ->
 parse(L) ->
     parse(L, []).
 
-% work in progress
+% [(, 2, +, 3, )]
 
 parse([], NL) when not is_tuple(NL) ->
     erlang:list_to_tuple(NL);
@@ -145,13 +145,19 @@ parse([], NL) ->
 parse([X | _], NL) when X == 41 ->
     erlang:list_to_tuple(NL);
 parse([X | L], NL) when X == 40 ->
-    io:format("~w~n", [NL]),
-    io:format("~w~n~n", [parse(L)]),
-    erlang:append_element(erlang:list_to_tuple(NL), parse(L));
+    Tuple = erlang:list_to_tuple(NL),
+    NextTuple = parse(L),
+    if tuple_size(Tuple) == 0 ->
+       NextTuple;
+    true ->
+       erlang:append_element(Tuple, NextTuple)
+    end;
 parse([X | L], NL) when X == 43 ->
     parse(L, [plus | NL]);
 parse([X | L], NL) when X == 45 ->
     parse(L, [minus | NL]);
+parse([X | L], NL) when X == 42 ->
+    parse(L, [multiply | NL]);
 parse([X | L], NL) when X == 32 ->
     parse(L, NL);
 parse([X | L], NL) ->
