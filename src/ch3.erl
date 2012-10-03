@@ -138,6 +138,20 @@ parse(L) ->
 
 % [(, 2, +, 3, )]
 
+count_to_end_paren(L) ->
+    count_to_end_paren(L, 0, 0).
+
+count_to_end_paren([X | L], Lvl, C) when X == 41 ->
+    if Lvl == 1 -> C + 1;
+    true -> count_to_end_paren(L, Lvl - 1, C + 1)
+    end;
+count_to_end_paren([X | L], Lvl, C) when X == 40 ->
+    count_to_end_paren(L, Lvl + 1, C + 1);
+count_to_end_paren([_ | L], Lvl, C) ->
+    if Lvl == 0 -> 0;
+    true -> count_to_end_paren(L, Lvl, C + 1)
+    end.
+
 parse([], NL) when not is_tuple(NL) ->
     erlang:list_to_tuple(NL);
 parse([], NL) ->
@@ -147,11 +161,25 @@ parse([X | _], NL) when X == 41 ->
 parse([X | L], NL) when X == 40 ->
     Tuple = erlang:list_to_tuple(NL),
     NextTuple = parse(L),
+    Count = count_to_end_paren(L),
     if tuple_size(Tuple) == 0 ->
-       NextTuple;
-    true ->
-       erlang:append_element(Tuple, NextTuple)
-    end;
+	    if Count > 0 ->
+		    AnythingNext = lists:sublist(L, Count + 1, length(L)),
+		    AnythingNextTuple = parse(AnythingNext, NL),
+	            {element(1, AnythingNextTuple), NextTuple, element(2, AnythingNextTuple)};
+	       true ->
+		    NextTuple
+	    end;
+       true ->
+	    if Count > 0 ->
+		    AnythingNext = lists:sublist(L, Count + 1, length(L)),
+		    AnythingNextTuple = parse(AnythingNext),
+		    OMG = {element(1, AnythingNextTuple), NextTuple, element(2, AnythingNextTuple)},
+		    erlang:append_element(Tuple, OMG);
+	       true ->
+		    erlang:append_element(Tuple, NextTuple)
+	    end
+       end;
 parse([X | L], NL) when X == 43 ->
     parse(L, [plus | NL]);
 parse([X | L], NL) when X == 45 ->
