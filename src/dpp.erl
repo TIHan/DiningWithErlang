@@ -7,7 +7,6 @@
 -export([replace_element/3]).
 -export([bubble_sort/1]).
 -export([selection_sort/1]).
--export([min_steps/2]).
 
 % Other Functions
 get_min([X | L]) ->
@@ -99,24 +98,5 @@ selection_sort(NL, HT, TL, [X | L]) ->
 % http://en.wikipedia.org/wiki/Insertion_sort
 % TODO:
 % End Insertion Sort
-
-min_steps(X, Y) ->
-    min_steps(Y - X, 1, 1, 1).
-
-min_steps(Dist, _, _, _) when Dist =< 0 ->
-    invalid_input;
-min_steps(1, _, _, _) ->
-    1;
-min_steps(Dist, _, Steps, Sum) when Sum >= Dist ->
-    io:format("HEY~n"),
-    Steps;
-min_steps(Dist, PrevStepDist, Steps, Sum) ->
-    NextStepDist = PrevStepDist + 1,
-    Val = trunc(math:pow(NextStepDist, 2)),
-    if Val > Dist ->
-	    Steps + min_steps(Dist - Sum, 1, 1, 1);
-       true ->
-	    min_steps(Dist, NextStepDist, Steps + 1, Sum + NextStepDist)
-    end.
     
     
