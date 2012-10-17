@@ -5,6 +5,9 @@
 -export([problem3/0]).
 -export([problem4/0]).
 -export([problem5/0]).
+-export([problem6/0]).
+-export([problem7/0]).
+-export([problem8/0]).
 
 %% http://projecteuler.net/problem=1
 problem1() ->
@@ -34,6 +37,8 @@ problem2(X, Y, Sum) ->
 is_prime(X) ->
 	is_prime(2, X).
 
+is_prime(_, Y) when Y =< 1 ->
+	false;
 is_prime(X, Y) when X == Y ->
 	true;
 is_prime(X, Y) when Y rem X == 0 ->
@@ -43,7 +48,7 @@ is_prime(X, Y) ->
 
 problem3() ->
 	Num = 600851475143,
-	problem3(0, 2, Num, trunc(math:sqrt(Num))).
+	problem3(0, 1, Num, trunc(math:sqrt(Num))).
 
 problem3(X, Y, _, MaxNum) when Y == MaxNum ->
 	X;
@@ -112,3 +117,33 @@ problem5(Num, Div) when Num rem 2 == 0 ->
 	end;
 problem5(Num, _) ->
 	problem5(Num + 1, 1).
+
+%% http://projecteuler.net/problem=6
+sum_of_squares(100) ->
+  math:pow(100, 2);
+sum_of_squares(X) ->
+  math:pow(X, 2) + sum_of_squares(X + 1).
+
+sum(100) ->
+  100;
+sum(X) ->
+  X + sum(X + 1).
+    
+problem6() ->
+  math:pow(sum(1), 2) - sum_of_squares(1).
+
+%% http://projecteuler.net/problem=7
+% Slow, URRHGHHGHG
+problem7()->
+  problem7(10001, 1, 0).
+
+problem7(Prime, Num, Count) when Prime == Count ->
+  Num - 1; % Eh, not happy about this.
+problem7(Prime, Num, Count) ->
+  IsPrime = is_prime(Num),
+  if
+		IsPrime == true ->
+	    problem7(Prime, Num + 1, Count + 1);
+		true ->
+	    problem7(Prime, Num + 1, Count)
+  end.
